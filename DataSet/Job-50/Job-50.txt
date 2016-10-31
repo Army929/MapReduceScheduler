@@ -1,0 +1,63 @@
+<jobs>
+<job id='1' maptasknum='99' reducetasknum='27'>
+  <maptask runtime='92' size='320'/> 
+  <maptask runtime='60' size='128'/>
+  <maptask runtime='35' size='128'/>
+  <maptask runtime='50' size='192'/>
+  <maptask runtime='97' size='256'/>
+  <maptask runtime='59' size='320'/>
+  <maptask runtime='102' size='192'/>
+  <maptask runtime='72' size='256'/> 
+  <maptask runtime='58' size='256'/>
+  <maptask runtime='67' size='256'/>
+  <maptask runtime='73' size='128'/>
+  <maptask runtime='76' size='256'/>
+  <maptask runtime='64' size='320'/>
+  <reducetask runtime='202' size='1461'/>
+  <reducetask runtime='139' size='1461'/>
+  <reducetask runtime='158' size='1461'/>
+</job>
+<job id='2' maptasknum='108' reducetasknum='13'>
+  <maptask runtime='43' size='320'/>
+  <maptask runtime='92' size='320'/> 
+  <maptask runtime='60' size='128'/>
+  <maptask runtime='35' size='128'/>
+  <maptask runtime='50' size='192'/>
+  <maptask runtime='97' size='256'/>
+  <maptask runtime='59' size='320'/>
+  <maptask runtime='102' size='192'/>
+  <maptask runtime='72' size='256'/> 
+  <maptask runtime='58' size='256'/>
+  <maptask runtime='67' size='256'/>
+  <maptask runtime='73' size='128'/>
+  <maptask runtime='76' size='256'/>
+  <maptask runtime='64' size='320'/>
+  <reducetask runtime='202' size='1461'/>
+  <reducetask runtime='139' size='1461'/>
+  <reducetask runtime='158' size='1461'/>
+  <reducetask runtime='126' size='1461'/> 
+  <reducetask runtime='139' size='1461'/>
+</job>
+<job id='3' maptasknum='110' reducetasknum='13'>
+  <maptask runtime='43' size='320'/>
+  <maptask runtime='92' size='320'/> 
+  <maptask runtime='60' size='128'/>
+  <maptask runtime='35' size='128'/>
+  <maptask runtime='50' size='192'/>
+  <maptask runtime='47' size='256'/>
+  <maptask runtime='59' size='320'/>
+  <maptask runtime='82' size='192'/>
+  <maptask runtime='62' size='256'/> 
+  <maptask runtime='98' size='256'/>
+  <maptask runtime='37' size='256'/>
+  <maptask runtime='73' size='128'/>
+  <maptask runtime='96' size='256'/>
+  <maptask runtime='24' size='320'/>
+  <reducetask runtime='102' size='1461'/>
+  <reducetask runtime='122' size='1461'/>
+  <reducetask runtime='118' size='1461'/>
+  <reducetask runtime='100' size='1461'/> 
+  <reducetask runtime='126' size='1461'/>
+</job>
+</jobs>
+
