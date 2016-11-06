@@ -591,19 +591,17 @@ public class SourceScheduler {
 
 		// 把map、reduce stage time排序得到的作业排序合并,再重新赋值给listjob
 		listMapJob.addAll(listReduceJob);
-	     listjob = listMapJob;//重新赋值，恢复原来大小
+	    listjob = listMapJob;//重新赋值，恢复原来大小
 		// 验证JR1的作业排序
-		// System.out.println("===JR1 last tmplistjob
-		// size:"+tmplistjob.size());//应该为1
-		// System.out.println("===JR1 sum size:"+listjob.size()+" ==
-		// "+listjob.size());
-
+//		 System.out.println("===JR1 last tmplistjob size:"+tmplistjob.size());//应该为1
+//		 System.out.println("===JR1 sum size:"+listjob.size());
+//	     System.out.println("job size:"+listjob.size());
 		// job的JR1排序后输出验证
 		// System.out.println("-------------------------");
-		// for (Job jo : listjob) {
-		// System.out.println("--mapstageTime:" + jo.getMapStageTime() +
-		// ",reducestageTime:" + jo.getReduceStageTime());
-		// }
+//		 for (Job jo : listjob) {
+//		 System.out.println("--mapstageTime:" + jo.getMapStageTime() +
+//		 ",reducestageTime:" + jo.getReduceStageTime());
+//		 }
 		return listjob;
 	}
 
@@ -1126,9 +1124,6 @@ public class SourceScheduler {
 		// 验证--已验证LPT排序正确
 		// System.out.println("maptaskAll elem runtime:"+mt.mapRunTime);//
 		// }
-//		for (Job jb : listJob) {
-//			jb.mapStageTime = 0;
-//		}
 
 		// 对所有的任务根据 arg min{人k+s+p} 用EF取最小的slot
 		int indexMapSlot;
@@ -1148,7 +1143,7 @@ public class SourceScheduler {
 			// 在map阶段调用TAP TAP(job,int indexTask,int slotk,m);
 			TAP(jobInstance, indexMapTask, indexMapSlot, 'm');
 		}
-
+	 
 		// johnson 对作业排序
 		listJob = johnsonSort(listJob);// 对作业排序
 		// // ---------------根据johnson的作业排序-------------
@@ -1159,6 +1154,7 @@ public class SourceScheduler {
 		List<Integer> jobIdJR1Sort = new ArrayList<Integer>();
 		for (Job jb : listJob) {
 			jobIdJR1Sort.add(jb.jobId);// JR1排序下的jobId的排序
+			System.out.println("jobId:"+jb.jobId);
 		}
 		// 5.根据johnson的作业排序，移动任务 jobIdJR1Sort 作业的JR1排序List
 		// TAP每个slot上有map task调度的序列
