@@ -67,71 +67,71 @@ public class SourceScheduler {
 	// --------------------------作业 数量-------------
 	int[] jobNum = { 50, 100, 150, 200, 250 };
 
-	public static void queue() {
-		// 10个作业在2台机子上执行的时间
-		int[] aMachineTime = { 2, 7, 8, 3, 9, 5, 11, 16, 15, 10 };
-		int[] bMachineTime = { 5, 9, 6, 4, 3, 7, 12, 8, 10, 14 };
-		int[] pMachine = new int[10];
-		int[] qMachine = new int[10];
-		int p = -1;
-		int q = -1;
-		for (int i = 0; i < 10; i++) {
-			if (aMachineTime[i] >= bMachineTime[i]) {// a 比 b机器费时
-				p++;
-				q++;
-				pMachine[p] = bMachineTime[i];
-				qMachine[q] = aMachineTime[i];
-			} else {
-				p++;
-				q++;
-				pMachine[p] = aMachineTime[i];
-				qMachine[q] = bMachineTime[i];
-			}
-		}
-		for (int i = 0; i < pMachine.length; i++) {
-			System.out.print(pMachine[i] + " ");
-		}
-		System.out.println();
+//	public static void queue() {
+//		// 10个作业在2台机子上执行的时间
+//		int[] aMachineTime = { 2, 7, 8, 3, 9, 5, 11, 16, 15, 10 };
+//		int[] bMachineTime = { 5, 9, 6, 4, 3, 7, 12, 8, 10, 14 };
+//		int[] pMachine = new int[10];
+//		int[] qMachine = new int[10];
+//		int p = -1;
+//		int q = -1;
+//		for (int i = 0; i < 10; i++) {
+//			if (aMachineTime[i] >= bMachineTime[i]) {// a 比 b机器费时
+//				p++;
+//				q++;
+//				pMachine[p] = bMachineTime[i];
+//				qMachine[q] = aMachineTime[i];
+//			} else {
+//				p++;
+//				q++;
+//				pMachine[p] = aMachineTime[i];
+//				qMachine[q] = bMachineTime[i];
+//			}
+//		}
+//		for (int i = 0; i < pMachine.length; i++) {
+//			System.out.print(pMachine[i] + " ");
+//		}
+//		System.out.println();
+//
+//		// p 队列递增
+//		int tmp = 0;
+//		for (int i = 0; i < pMachine.length; i++) {
+//			int middle = pMachine[i];
+//			// int middle =0;
+//			// 选最小的数
+//			int k = i;
+//			for (int j = i + 1; j < pMachine.length; j++) {
+//				if (pMachine[k] > pMachine[j]) {
+//					k = j;
+//				}
+//			}
+//			tmp = pMachine[i];// 每次选出最小的数
+//			pMachine[i] = pMachine[k];
+//			pMachine[k] = tmp;
+//		}
 
-		// p 队列递增
-		int tmp = 0;
-		for (int i = 0; i < pMachine.length; i++) {
-			int middle = pMachine[i];
-			// int middle =0;
-			// 选最小的数
-			int k = i;
-			for (int j = i + 1; j < pMachine.length; j++) {
-				if (pMachine[k] > pMachine[j]) {
-					k = j;
-				}
-			}
-			tmp = pMachine[i];// 每次选出最小的数
-			pMachine[i] = pMachine[k];
-			pMachine[k] = tmp;
-		}
-
-		for (int i = 0; i < pMachine.length; i++) {
-			System.out.print(pMachine[i] + " ");
-		}
-		System.out.println();
-		for (int i = 0; i < qMachine.length; i++) {
-			System.out.print(qMachine[i] + " ");
-		}
-		System.out.println();
-		// q 队列递减
-		for (int i = 0; i < qMachine.length; i++) {
-			for (int j = i + 1; j < qMachine.length; j++) {
-				if (qMachine[i] <= qMachine[j]) {
-					tmp = qMachine[i];
-					qMachine[i] = qMachine[j];
-					qMachine[j] = tmp;
-				}
-			}
-		}
-		for (int i = 0; i < qMachine.length; i++) {
-			System.out.print(qMachine[i] + " ");
-		}
-	}
+//		for (int i = 0; i < pMachine.length; i++) {
+//			System.out.print(pMachine[i] + " ");
+//		}
+//		System.out.println();
+//		for (int i = 0; i < qMachine.length; i++) {
+//			System.out.print(qMachine[i] + " ");
+//		}
+//		System.out.println();
+//		// q 队列递减
+//		for (int i = 0; i < qMachine.length; i++) {
+//			for (int j = i + 1; j < qMachine.length; j++) {
+//				if (qMachine[i] <= qMachine[j]) {
+//					tmp = qMachine[i];
+//					qMachine[i] = qMachine[j];
+//					qMachine[j] = tmp;
+//				}
+//			}
+//		}
+//		for (int i = 0; i < qMachine.length; i++) {
+//			System.out.print(qMachine[i] + " ");
+//		}
+//	}
 
 	// 参数初始化:生成数据 作业数{50，100，150，200，250}，每种30套
 	public static void produceDataset() {
@@ -422,7 +422,7 @@ public class SourceScheduler {
 	}
 
 	// 递归文件夹下所有文件
-	public static void getFiles(String filePath) {
+	//public static void getFiles(String filePath) {
 		// File root=new File(filePath);
 		// File[] files=root.listFiles();
 		// for(File file:files){
@@ -480,7 +480,7 @@ public class SourceScheduler {
 		// }
 		//
 		// System.out.println("append finish!");
-	}
+	//}
 
 	// ========================调度过程-调度算法===========================
 	// Johnson规则需要计算 ：持续时间，为了排序 持续时间参数设置-----------------------w
@@ -995,42 +995,7 @@ public class SourceScheduler {
 		return minIndex;
 	}
 
-	// public static Integer minMapSlotTime_EA_slot_index(List<MapSlot>
-	// listMapSlot, List<ReduceSlot> listReduceSlot,
-	// char m_r) {
-	// // 要返回 的下标值
-	// Integer minIndex = 0;
-	// // 计数，为了返回下标值
-	// int count = -1;
-	// if (m_r == 'm') {// map 阶段
-	// // 假设第一个map slot的当前时间最小
-	// Integer minMapSlotTime = listMapSlot.get(0).currentMapSlotTime;
-	// for (MapSlot ms : listMapSlot) {
-	// count++;
-	// // 根据EA
-	// if (ms.currentMapSlotTime < minMapSlotTime) {// 如果比第一个小，则取代
-	// minMapSlotTime = ms.currentMapSlotTime;// 要动态更新最小值，为了下一轮的比较
-	// minIndex = count;
-	// }
-	// }
-	// } else {// reduce 阶段
-	// // 假设第一个reduce slot的当前时间最小
-	// Integer minReduceSlotTime = listReduceSlot.get(0).currentReduceSlotTime;
-	// for (ReduceSlot rs : listReduceSlot) {
-	// count++;
-	// // 验证slot值，reduce slot个数 slot只对reduce阶段前reduce slot的个数排序有效
-	// // System.out.println("reduce slot current
-	// // time:"+rs.currentReduceSlotTime);
-	// if (rs.currentReduceSlotTime < minReduceSlotTime) {
-	// minReduceSlotTime = rs.currentReduceSlotTime;// 要动态更新最小值，为了下一轮的比较
-	// minIndex = count;
-	// }
-	// }
-	// }
-	//
-	// return minIndex;
-	// }
-
+	 
 	// EF算法：从所有map slot中选最早完成时间
 	// 参数：mapslot集合，当前处理的任务
 	// 返回对应的map slot的List中下标
@@ -1478,214 +1443,7 @@ public class SourceScheduler {
 		return RE;
 	}
 
-
-	// 返回每种作业30次计算相对误差的平均值
-	// 参数：作业数种类{50,100,150,200,250}
-	// public static void average30JobsEA_RE(int jobNum, int nodeNum, int
-	// mapSlotNum, double w) {
-	// // 存储LB_VALUE,便于后面DAG算法计算
-	// LB_VALUE = new double[jobNum];
-	// // 参数：节点数量，每个节点map slot数量，每个节点的reduce数量固定为2
-	// // 读取文件路径
-	// String pathCommon = "D:\\JaveWeb\\MapReduceScheduler\\DataSet\\" + "Job-"
-	// + jobNum + "\\" + "Job-" + jobNum
-	// + "-";
-	// double averageRE = 0;
-	// double tmpRE = 0;
-	// // 平均计算时间
-	// long avgTime = 0;
-	//
-	// // 30次读取文件 、30次计算Cmax、 30次计算LB [针对每种作业数目的文件]----总测试
-	// for (int i = 0; i < 30; i++) {
-	// // 计算算法调度时间用的startime、endtime 调度平均时间
-	// long starTime = System.currentTimeMillis();
-	// // 读取文件 ： 参数 jobNum(文件夹名)、i 文件尾号数字
-	// String datafilePaht = pathCommon + i + ".txt";
-	// List<Job> listJobs = readFromFile(datafilePaht);
-	//
-	// // 持续时间计算 duration time 计算，考虑参数w={0.1，0.3，0.7，0.9}
-	// // 参数：作业集合，节点数，每个节点的map slot数目，持续时间评估的参数w
-	// durationTime(listJobs, nodeNum, mapSlotNum, w);// w的值
-	// // johnson 对作业排序
-	// listJobs = johnsonSort(listJobs);// 对作业排序！！！！！
-	//
-	// // slot初始化生成
-	// Map map = initSlots(nodeNum, mapSlotNum);
-	// List<MapSlot> listMapSlot = (List) map.get("listMapSlot");
-	// List<ReduceSlot> listReduceSlot = (List) map.get("listReduceSlot");
-	//
-	// double Cmax;
-	// // ---EA、EF算法验证完成----
-	// // slot分配 、调度,返回Cmax
-	// // 参数：mapslot集合，reduceslot集合，作业集合，EA、EF、TBS方法选择
-	//
-	// // EA
-	// Cmax = taskToSlotScheduler_EA_EF(listMapSlot, listReduceSlot, listJobs,
-	// 'A');
-	//
-	// //// System.out.println("Cmax:" + Cmax);
-	//
-	// // -------------计算LB-----------------
-	// // LB调用要在Cmax结果得出之后，这样的每个任务的setupTime确定，为下界计算修正时间方便
-	// double LB = lowerBound(listJobs, nodeNum, mapSlotNum);
-	// // DAG中要用
-	// LB_VALUE[i] = LB;
-	//
-	// // -------------验证相对错误率-------------
-	// tmpRE = relativeError(Cmax, LB);
-	// // tmpRE = Math.floor(tmpRE * 10000) * 0.0001d;// 保留四位有效数字
-	// averageRE += tmpRE;
-	// // System.out.println("tmpRE:" + tmpRE);
-	// // System.out.println("------------------------");
-	// long endTime = System.currentTimeMillis() - starTime;
-	// avgTime += endTime;
-	//
-	// }
-	// averageRE = averageRE / 30;
-	// // 保留四位有效数字
-	// DecimalFormat df = new DecimalFormat("#0.0000");
-	// System.out.println("averageRE:" + df.format(averageRE));
-	// System.out.println("作业平均调度运行的时间：" + avgTime / 30);
-	//
-	// // 返回计算平均
-	// // return averageRE;
-	// }
-	//
-	// public static void average30JobsEF_RE(int jobNum, int nodeNum, int
-	// mapSlotNum, double w) {
-	// // 参数：节点数量，每个节点map slot数量，每个节点的reduce数量固定为2
-	// // 读取文件路径
-	// String pathCommon = "D:\\JaveWeb\\MapReduceScheduler\\DataSet\\" + "Job-"
-	// + jobNum + "\\" + "Job-" + jobNum
-	// + "-";
-	// double averageRE = 0;
-	// double tmpRE = 0;
-	// // 平均计算时间
-	// long avgTime = 0;
-	//
-	// // 30次读取文件 、30次计算Cmax、 30次计算LB [针对每种作业数目的文件]----总测试
-	// for (int i = 0; i < 30; i++) {
-	// // 计算算法调度时间用的startime、endtime 调度平均时间
-	// long starTime = System.currentTimeMillis();
-	// // 读取文件 ： 参数 jobNum(文件夹名)、i 文件尾号数字
-	// String datafilePaht = pathCommon + i + ".txt";
-	// List<Job> listJobs = readFromFile(datafilePaht);
-	//
-	// // 持续时间计算 duration time 计算，考虑参数w={0.1，0.3，0.7，0.9}
-	// // 参数：作业集合，节点数，每个节点的map slot数目，持续时间评估的参数w
-	// durationTime(listJobs, nodeNum, mapSlotNum, w);// w的值
-	// // johnson 对作业排序
-	// listJobs = johnsonSort(listJobs);// 对作业排序！！！！！
-	//
-	// // slot初始化生成
-	// Map map = initSlots(nodeNum, mapSlotNum);
-	// List<MapSlot> listMapSlot = (List) map.get("listMapSlot");
-	// List<ReduceSlot> listReduceSlot = (List) map.get("listReduceSlot");
-	//
-	// double Cmax;
-	// // ---EA、EF算法验证完成----
-	// // slot分配 、调度,返回Cmax
-	// // 参数：mapslot集合，reduceslot集合，作业集合，EA、EF、TBS方法选择
-	//
-	// // EF
-	// Cmax = taskToSlotScheduler_EA_EF(listMapSlot, listReduceSlot, listJobs,
-	// 'F');
-	// //// System.out.println("Cmax:" + Cmax);
-	//
-	// // -------------计算LB-----------------
-	// // LB调用要在Cmax结果得出之后，这样的每个任务的setupTime确定，为下界计算修正时间方便
-	// double LB = lowerBound(listJobs, nodeNum, mapSlotNum);
-	// // DAG中要用
-	// LB_VALUE[i] = LB;
-	//
-	// // -------------验证相对错误率-------------
-	// tmpRE = relativeError(Cmax, LB);
-	// // tmpRE = Math.floor(tmpRE * 10000) * 0.0001d;// 保留四位有效数字
-	// averageRE += tmpRE;
-	// // System.out.println("tmpRE:" + tmpRE);
-	// // System.out.println("------------------------");
-	// long endTime = System.currentTimeMillis() - starTime;
-	// avgTime += endTime;
-	//
-	// }
-	// averageRE = averageRE / 30;
-	// // 保留四位有效数字
-	// DecimalFormat df = new DecimalFormat("#0.0000");
-	// System.out.println("averageRE:" + df.format(averageRE));
-	// System.out.println("作业平均调度运行的时间：" + avgTime / 30);
-	//
-	// // 返回计算平均
-	// // return averageRE;
-	// }
-	//
-	//
-	// public static void average30JobsTBS_RE(int jobNum, int nodeNum, int
-	// mapSlotNum, double w) {
-	//
-	// // 参数：节点数量，每个节点map slot数量，每个节点的reduce数量固定为2
-	// // 读取文件路径
-	// String pathCommon = "D:\\JaveWeb\\MapReduceScheduler\\DataSet\\" + "Job-"
-	// + jobNum + "\\" + "Job-" + jobNum
-	// + "-";
-	// double averageRE = 0;
-	// double tmpRE = 0;
-	// // 平均计算时间
-	// long avgTime = 0;
-	//
-	// // 30次读取文件 、30次计算Cmax、 30次计算LB [针对每种作业数目的文件]----总测试
-	// for (int i = 0; i < 30; i++) {
-	// // 计算算法调度时间用的startime、endtime 调度平均时间
-	// long starTime = System.currentTimeMillis();
-	// // 读取文件 ： 参数 jobNum(文件夹名)、i 文件尾号数字
-	// String datafilePaht = pathCommon + i + ".txt";
-	// List<Job> listJobs = readFromFile(datafilePaht);
-	//
-	// // 持续时间计算 duration time 计算，考虑参数w={0.1，0.3，0.7，0.9}
-	// // 参数：作业集合，节点数，每个节点的map slot数目，持续时间评估的参数w
-	// durationTime(listJobs, nodeNum, mapSlotNum, w);// w的值
-	// // johnson 对作业排序
-	// listJobs = johnsonSort(listJobs);// 对作业排序！！！！！
-	//
-	// // slot初始化生成
-	// Map map = initSlots(nodeNum, mapSlotNum);
-	// List<MapSlot> listMapSlot = (List) map.get("listMapSlot");
-	// List<ReduceSlot> listReduceSlot = (List) map.get("listReduceSlot");
-	//
-	// double Cmax;
-	// // ---EA、EF算法验证完成----
-	// // slot分配 、调度,返回Cmax
-	// // 参数：mapslot集合，reduceslot集合，作业集合，EA、EF、TBS方法选择
-	//
-	// // TBS
-	// Cmax = taskToSlotScheduler_TBS(listMapSlot, listReduceSlot, listJobs);
-	// //// System.out.println("Cmax:" + Cmax);
-	//
-	// // -------------计算LB-----------------
-	// // LB调用要在Cmax结果得出之后，这样的每个任务的setupTime确定，为下界计算修正时间方便
-	// double LB = lowerBound(listJobs, nodeNum, mapSlotNum);
-	// // DAG中要用
-	// LB_VALUE[i] = LB;
-	//
-	// // -------------验证相对错误率-------------
-	// tmpRE = relativeError(Cmax, LB);
-	// // tmpRE = Math.floor(tmpRE * 10000) * 0.0001d;// 保留四位有效数字
-	// averageRE += tmpRE;
-	// // System.out.println("tmpRE:" + tmpRE);
-	// // System.out.println("------------------------");
-	// long endTime = System.currentTimeMillis() - starTime;
-	// avgTime += endTime;
-	//
-	// }
-	// averageRE = averageRE / 30;
-	// // 保留四位有效数字
-	// DecimalFormat df = new DecimalFormat("#0.0000");
-	// System.out.println("averageRE:" + df.format(averageRE));
-	// System.out.println("作业平均调度运行的时间：" + avgTime / 30);
-	//
-	// // 返回计算平均
-	// // return averageRE;
-	// }
-
+ 
 	public static void avg30DAG(int jobNum, int nodeNum, int mapSlotNum,char EA_EF) {
 		// 平均调度时间
 		long sumTime = 0;
