@@ -60,7 +60,10 @@ public class SourceScheduler {
 	static int fr = 50;
 
 	static int fn = 30;
-
+	
+	// --------------------------存储EA、EF的下界值----------------
+	public static double[] LB_VALUE_EA;
+	public static double[] LB_VALUE_EF;
 	// --------------------------作业 数量-------------
 	int[] jobNum = { 50, 100, 150, 200, 250 };
 
@@ -549,7 +552,10 @@ public class SourceScheduler {
 
 		// 2.每次找出所有Job中，map和reduce 的stagetime最小的，找到后移除该作业，在剩余作业中继续寻找
 		List<Job> tmplistjob = new ArrayList<Job>();
-		tmplistjob = listjob;// job集合不断在变化的长度，最长时为所有job长度，每循环一次减1
+		for (Job jb1 : listjob) {
+			tmplistjob.add(jb1);
+		}
+		// tmplistjob = listjob;// job集合不断在变化的长度，最长时为所有job长度，每循环一次减1
 		// System.out.println("job sum size:" + listjob.size());
 		// 每次找出最小的job元素
 		for (int i = 0; i < jobNum - 1; i++) {
@@ -591,17 +597,18 @@ public class SourceScheduler {
 
 		// 把map、reduce stage time排序得到的作业排序合并,再重新赋值给listjob
 		listMapJob.addAll(listReduceJob);
-	    listjob = listMapJob;//重新赋值，恢复原来大小
+		listjob = listMapJob;// 重新赋值，恢复原来大小
 		// 验证JR1的作业排序
-//		 System.out.println("===JR1 last tmplistjob size:"+tmplistjob.size());//应该为1
-//		 System.out.println("===JR1 sum size:"+listjob.size());
-//	     System.out.println("job size:"+listjob.size());
+		// System.out.println("===JR1 last tmplistjob
+		// size:"+tmplistjob.size());//应该为1
+		// System.out.println("===JR1 sum size:"+listjob.size());
+		// System.out.println("job size:"+listjob.size());
 		// job的JR1排序后输出验证
 		// System.out.println("-------------------------");
-//		 for (Job jo : listjob) {
-//		 System.out.println("--mapstageTime:" + jo.getMapStageTime() +
-//		 ",reducestageTime:" + jo.getReduceStageTime());
-//		 }
+		// for (Job jo : listjob) {
+		// System.out.println("--mapstageTime:" + jo.getMapStageTime() +
+		// ",reducestageTime:" + jo.getReduceStageTime());
+		// }
 		return listjob;
 	}
 
@@ -1143,7 +1150,7 @@ public class SourceScheduler {
 			// 在map阶段调用TAP TAP(job,int indexTask,int slotk,m);
 			TAP(jobInstance, indexMapTask, indexMapSlot, 'm');
 		}
-	 
+
 		// johnson 对作业排序
 		listJob = johnsonSort(listJob);// 对作业排序
 		// // ---------------根据johnson的作业排序-------------
@@ -1154,7 +1161,7 @@ public class SourceScheduler {
 		List<Integer> jobIdJR1Sort = new ArrayList<Integer>();
 		for (Job jb : listJob) {
 			jobIdJR1Sort.add(jb.jobId);// JR1排序下的jobId的排序
-			System.out.println("jobId:"+jb.jobId);
+			// System.out.println("jobId:"+jb.jobId);
 		}
 		// 5.根据johnson的作业排序，移动任务 jobIdJR1Sort 作业的JR1排序List
 		// TAP每个slot上有map task调度的序列
@@ -1264,8 +1271,9 @@ public class SourceScheduler {
 		// 返回最大的reduce slot 时间 与上一种算法得到的值一样
 		// Cmax = maxReduceSlotTime(listReduceSlot);
 		// 得到最长的调度时间
-//		System.out.println("listjob size===:"+listJob.size());
+		// System.out.println("listjob size===:"+listJob.size());
 		Cmax = maxReduceStageTime(listJob);
+		// System.out.println("job size ===:"+listJob.size());
 		return Cmax;
 	}
 
@@ -1295,7 +1303,7 @@ public class SourceScheduler {
 		// Mm表示Map Slot数量
 		int Mm = nodeNum * mapSlotNum;
 		int Mr = nodeNum * 2;// 因为每个节点固定包含reduce slot数目为2
-		//System.out.println("listJob size:"+listJob.size());
+		// System.out.println("listJob size:"+listJob.size());
 		// 验证准备时间是否是调度时存入时间
 		// for(Job jb:listJob){
 		// for(MapTask mt:jb.mapTask){
@@ -1383,14 +1391,13 @@ public class SourceScheduler {
 		// 保留四位有效数字
 		DecimalFormat df = new DecimalFormat("#0.0000");
 		// -------------------计算LB1------------------------
-		// 根据每个作业Map阶段的修正时间排序 从小到大  升序---验证正确
+		// 根据每个作业Map阶段的修正时间排序 从小到大 升序---验证正确
 		jobSortAsMapLBTime(listJob);
 		double LB1_x = 0.0;// LB1=max{x,y},其中的x数
-		System.out.println("LB listJob size1:"+listJob.size());
-	//	System.out.println("Mr:"+Mr);
+		// System.out.println("LB listJob size1:"+listJob.size());
 		// 取Mr个map作业的作业元素 Hm(Mr)，Mr：reduce slot的数量
-		for (int i = 0; i < Mr; i++) {
-		
+		for (int i = 0; i < Math.min(Mr,listJob.size()); i++) {
+
 			LB1_x += listJob.get(i).L_map_sumTime;
 		}
 		LB1_x += allTaskL_reduce_time;// 所有分子累加值 所有作业的reduce的修正时间
@@ -1402,7 +1409,7 @@ public class SourceScheduler {
 		//// 取Mm个reduce作业的作业元素 Hr(Mm)，Mm：Map slot的数量
 		double LB1_y = 0;// LB1=max{x,y},其中的y数
 		// 取Mm个reduce作业的作业元素 Hm(Mr)
-		for (int i = 0; i < Mm; i++) {
+		for (int i = 0; i < Math.min(Mm,listJob.size()); i++) {
 			// 验证是否从小到大----已验证正确
 			// System.out.println("L_reduce_sumTime:"+i+","+listJob.get(i).L_reduce_sumTime);
 			LB1_y += listJob.get(i).L_reduce_sumTime;
@@ -1439,7 +1446,7 @@ public class SourceScheduler {
 		// 比较所有job的mapStageTime
 		Collections.sort(listjob, new Comparator<Job>() {// 增序
 			public int compare(Job job1, Job job2) {
-				//return job1.L_map_sumTime.compareTo(job2.getL_map_sumTime());
+				// return job1.L_map_sumTime.compareTo(job2.getL_map_sumTime());
 				return job1.getL_map_sumTime().compareTo(job2.getL_map_sumTime());
 
 			}
@@ -1457,7 +1464,8 @@ public class SourceScheduler {
 		// 比较所有job的mapStageTime
 		Collections.sort(listjob, new Comparator<Job>() {// 增序
 			public int compare(Job job1, Job job2) {
-				//return job1.L_reduce_sumTime.compareTo(job2.getL_reduce_sumTime());
+				// return
+				// job1.L_reduce_sumTime.compareTo(job2.getL_reduce_sumTime());
 				return job1.getL_reduce_sumTime().compareTo(job2.getL_reduce_sumTime());
 			}
 		});
@@ -1470,7 +1478,6 @@ public class SourceScheduler {
 		return RE;
 	}
 
-	public static double[] LB_VALUE;
 
 	// 返回每种作业30次计算相对误差的平均值
 	// 参数：作业数种类{50,100,150,200,250}
@@ -1679,13 +1686,14 @@ public class SourceScheduler {
 	// // return averageRE;
 	// }
 
-	public static void avg30DAG(int jobNum, int nodeNum, int mapSlotNum) {
+	public static void avg30DAG(int jobNum, int nodeNum, int mapSlotNum,char EA_EF) {
 		// 平均调度时间
 		long sumTime = 0;
 		// 每次的相对误差
 		double tmpDAGRE = 0;
 		// 30次的平均相对误差
 		double avgDAGRE = 0;
+		//double avgCmax=0;
 		// 读取文件路径
 		String pathCommon = "D:\\JaveWeb\\MapReduceScheduler\\DataSet\\" + "Job-" + jobNum + "\\" + "Job-" + jobNum
 				+ "-";
@@ -1694,18 +1702,33 @@ public class SourceScheduler {
 			long starTime = System.currentTimeMillis();
 			// 读取文件 ： 参数 jobNum(文件夹名)、i 文件尾号数字
 			String datafilePaht = pathCommon + i + ".txt";
+			List<Job> listJobs = SourceScheduler.readFromFile(datafilePaht);
 			// List<Job> listJobs = readFromFile(datafilePaht);
 			// ------------------------初始化数据---------------------------------
-			GraphDAG.initDAGData(datafilePaht);
-			double maxDAG = GraphDAG.taskToScheduler_DAG(nodeNum, mapSlotNum);
-			tmpDAGRE = relativeError(maxDAG, LB_VALUE[i]);//
+			GraphDAG.initDAGData(listJobs);
+			double maxDAG;
+			if(EA_EF=='A'){
+				maxDAG= GraphDAG.taskToScheduler_DAG(nodeNum, mapSlotNum,'A');
+				tmpDAGRE = relativeError(maxDAG, LB_VALUE_EA[i]);//
+			}else{
+				maxDAG= GraphDAG.taskToScheduler_DAG(nodeNum, mapSlotNum,'F');
+				tmpDAGRE = relativeError(maxDAG, LB_VALUE_EF[i]);//
+			//	System.out.println("CMAX:"+maxDAG);
+			}
+			
+			//由于DAG的下界没有按照Johnson排序取下界值，所以用前几个算法中的下界作为公用下界
+		//	double LB = lowerBound(listJobs, nodeNum, mapSlotNum);
+	//		System.out.println("DAG LB:"+LB);
+		
 			avgDAGRE += tmpDAGRE;
 			// System.out.println("maxDAG:" + maxDAG);
 			// System.out.println("LB_VALUE:" + LB_VALUE[i]);
 			// System.out.println("RE:" + tmpDAGRE);
 			long endTime = System.currentTimeMillis() - starTime;
 			sumTime += endTime;
+	//		avgCmax+=maxDAG;
 		}
+	//	System.out.println("TBS avgCax:"+avgCmax/30);
 		avgDAGRE = avgDAGRE / 30;
 		DecimalFormat df = new DecimalFormat("#0.0000");
 		System.out.println("avgDAGRE:" + df.format(avgDAGRE));
@@ -1716,7 +1739,8 @@ public class SourceScheduler {
 
 	public static void average30JobsRE(int jobNum, int nodeNum, int mapSlotNum, double w, char EA_EF_TBS) {
 		// 存储LB_VALUE,便于后面DAG算法计算
-		LB_VALUE = new double[jobNum];
+		LB_VALUE_EA = new double[jobNum];
+		LB_VALUE_EF = new double[jobNum];
 		// 参数：节点数量，每个节点map slot数量，每个节点的reduce数量固定为2
 		// 读取文件路径
 		String pathCommon = "D:\\JaveWeb\\MapReduceScheduler\\DataSet\\" + "Job-" + jobNum + "\\" + "Job-" + jobNum
@@ -1725,7 +1749,8 @@ public class SourceScheduler {
 		double tmpRE = 0;
 		// 平均计算时间
 		long avgTime = 0;
-
+ 
+		//double avgCmax=0;
 		// 30次读取文件 、30次计算Cmax、 30次计算LB [针对每种作业数目的文件]----总测试
 		for (int i = 0; i < 30; i++) {
 			// 计算算法调度时间用的startime、endtime 调度平均时间
@@ -1745,30 +1770,30 @@ public class SourceScheduler {
 			List<MapSlot> listMapSlot = (List) map.get("listMapSlot");
 			List<ReduceSlot> listReduceSlot = (List) map.get("listReduceSlot");
 
-			double Cmax;
+			double Cmax, LB;
 			// ---EA、EF算法验证完成----
 			// slot分配 、调度,返回Cmax
 			// 参数：mapslot集合，reduceslot集合，作业集合，EA、EF、TBS方法选择
 			if (EA_EF_TBS == 'A') { // 判断30遍
 				// EA
 				Cmax = taskToSlotScheduler_EA_EF(listMapSlot, listReduceSlot, listJobs, 'A');
+				// -------------计算LB-----------------
+				// LB调用要在Cmax结果得出之后，这样的每个任务的setupTime确定，为下界计算修正时间方便
+				LB = lowerBound(listJobs, nodeNum, mapSlotNum);
+				// DAG中要用
+				LB_VALUE_EA[i] = LB;
 			} else {// if (EA_EF_TBS == 'F')
 				// EF
 				Cmax = taskToSlotScheduler_EA_EF(listMapSlot, listReduceSlot, listJobs, 'F');
-			}
-			// else {
-			// TBS
-			// Cmax = taskToSlotScheduler_TBS(listMapSlot, listReduceSlot,
-			// listJobs);
-			// }
-			//// System.out.println("Cmax:" + Cmax);
-		
-			// -------------计算LB-----------------
-			// LB调用要在Cmax结果得出之后，这样的每个任务的setupTime确定，为下界计算修正时间方便
-			double LB = lowerBound(listJobs, nodeNum, mapSlotNum);
-			// DAG中要用
-			LB_VALUE[i] = LB;
-			// System.out.println("LB:"+i+",value:"+LB);
+				// -------------计算LB-----------------
+				// LB调用要在Cmax结果得出之后，这样的每个任务的setupTime确定，为下界计算修正时间方便
+				LB = lowerBound(listJobs, nodeNum, mapSlotNum);
+				// DAG中要用
+				LB_VALUE_EF[i] = LB; 
+		//		System.out.println("LB_VALUE_EF:"+LB_VALUE_EF[i]);
+			} 
+			
+		//	System.out.println("LB:"+i+",value:"+LB);
 			// -------------验证相对错误率-------------
 			tmpRE = relativeError(Cmax, LB);
 			// tmpRE = Math.floor(tmpRE * 10000) * 0.0001d;// 保留四位有效数字
@@ -1777,8 +1802,9 @@ public class SourceScheduler {
 			// System.out.println("------------------------");
 			long endTime = System.currentTimeMillis() - starTime;
 			avgTime += endTime;
-
+		//	avgCmax+=Cmax;
 		}
+		//System.out.println("EAEF Cmax:"+avgCmax/30);
 		averageRE = averageRE / 30;
 		// 保留四位有效数字
 		DecimalFormat df = new DecimalFormat("#0.0000");
@@ -1800,7 +1826,7 @@ public class SourceScheduler {
 		double tmpRE = 0;
 		// 平均计算时间
 		long avgTime = 0;
-
+	//	double avgCmax=0;
 		// 30次读取文件 、30次计算Cmax、 30次计算LB [针对每种作业数目的文件]----总测试
 		for (int i = 0; i < 30; i++) {
 			// 计算算法调度时间用的startime、endtime 调度平均时间
@@ -1808,33 +1834,27 @@ public class SourceScheduler {
 			// 读取文件 ： 参数 jobNum(文件夹名)、i 文件尾号数字
 			String datafilePaht = pathCommon + i + ".txt";
 			List<Job> listJobs = readFromFile(datafilePaht);
-			 
+
 			// slot初始化生成
 			Map map = initSlots(nodeNum, mapSlotNum);
 			List<MapSlot> listMapSlot = (List) map.get("listMapSlot");
 			List<ReduceSlot> listReduceSlot = (List) map.get("listReduceSlot");
 			// 持续时间计算 duration time 计算，考虑参数w={0.1，0.3，0.7，0.9}
 			// 参数：作业集合，节点数，每个节点的map slot数目，持续时间评估的参数w
-			durationTime(listJobs, nodeNum, mapSlotNum, w);// w的值 
-		
-			double Cmax=0.0;
+			durationTime(listJobs, nodeNum, mapSlotNum, w);// w的值
+
+			double Cmax = 0.0;
 			// ---EA、EF算法验证完成----
 			// slot分配 、调度,返回Cmax
 			// 参数：mapslot集合，reduceslot集合，作业集合，EA、EF、TBS方法选择
 			// TBS
 			Cmax = taskToSlotScheduler_TBS(listMapSlot, listReduceSlot, listJobs);
-		
-			// System.out.println("Cmax:" + Cmax);
-			System.out.println("execute---");
 			// // johnson 对作业排序
-			// listJobs = johnsonSort(listJobs);// 对作业排序！！！！！
 			// -------------计算LB-----------------
 			// LB调用要在Cmax结果得出之后，这样的每个任务的setupTime确定，为下界计算修正时间方便
-			//List<Job> listJobs2 = readFromFile(datafilePaht);
-//			System.out.println("JOB SIZE:"+listJobs.size());
-//			for(Job jb:listJobs){
-//				System.out.println("jb:"+jb.mapStageTime);
-//			}
+			// for(Job jb:listJobs){
+			// System.out.println("jb:"+jb.mapStageTime);
+			// }
 			double LB = lowerBound(listJobs, nodeNum, mapSlotNum);
 			// System.out.println("LB:"+i+",value:"+LB);
 			// DAG中要用
@@ -1848,8 +1868,9 @@ public class SourceScheduler {
 			// System.out.println("------------------------");
 			long endTime = System.currentTimeMillis() - starTime;
 			avgTime += endTime;
-
+	//		avgCmax+=Cmax;
 		}
+	//	System.out.println("TBS avgCax:"+avgCmax/30);
 		averageRE = averageRE / 30;
 		// 保留四位有效数字
 		DecimalFormat df = new DecimalFormat("#0.0000");
@@ -1869,27 +1890,29 @@ public class SourceScheduler {
 		// ---------------调参数---------------------
 		// 30个作业的最后相对误差平均值结果
 		// 参数：节点数量，每个节点map slot数量，每个节点的reduce数量固定为2
-		int jobNum = 50;// {50,100,150,200,250}
+		int jobNum = 250;// {50,100,150,200,250}
 		int nodeNum = 10;// {10,15,20,25,30}
-		int mapSlotNum = 2;// {2,4,6,8}
-		double w = 0.9;// {0.1,0.3,0.5,0.7,0.9}
+		int mapSlotNum =8 ;// {2,4,6,8}
+		double w = 0.5;// {0.1,0.3,0.5,0.7,0.9}
 		System.out.println("-----------------资源调度算法比较-----------------");
 		System.out.println("作业数：" + jobNum);
 		System.out.println("节点数：" + nodeNum);
 		System.out.println("每个节点map slot数：" + mapSlotNum);
 		System.out.println("持续时间调度参数：" + w);
 		// ---------EA、EF、TBS算法结果----------------
-		// 参数：作业数、结点数目、每个节点map slot数目、持续时间w
-		// System.out.println("------------------算法EA-----------------------");
-	//	 average30JobsRE(jobNum, nodeNum, mapSlotNum, w, 'A');
-		// System.out.println("-----------------算法EF-----------------------");
-		// average30JobsRE(jobNum, nodeNum, mapSlotNum, w, 'F');
+		// 参数：作业数、结点数目、每个节点map slot数目、持续时间w 
+		
+		System.out.println("-----------------算法EA-----------------------");
+		average30JobsRE(jobNum, nodeNum, mapSlotNum, w, 'A');
+		System.out.println("-----------------算法DAG EA-----------------");
+		avg30DAG(jobNum, nodeNum, mapSlotNum,'A');
+		
+		System.out.println("-----------------算法EF-----------------------");
+		average30JobsRE(jobNum, nodeNum, mapSlotNum, w, 'F');
+		System.out.println("-----------------算法DAG  EF-----------------");
+		avg30DAG(jobNum, nodeNum, mapSlotNum,'F');
 		System.out.println("-----------------算法TBS----------------------");
 		average30JobsTBS_RE(jobNum, nodeNum, mapSlotNum, w);
-		// ---------HEFT DAG算法结果----------------
-//		System.out.println("-----------------算法HEFT DAG-----------------");
-//		avg30DAG(jobNum, nodeNum, mapSlotNum);
-		// avg30DAG(jobNum, nodeNum, mapSlotNum);
 
 		// 任务分配
 		// queue();

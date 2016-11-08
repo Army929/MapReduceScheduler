@@ -23,12 +23,11 @@ public class GraphDAG {
 
 	static int fn = 30;
 
-	public static void initDAGData(String path) {
+	public static void initDAGData(List<Job> listJobs) {
 		 nodeList = new ArrayList<Node>();
 		 edgeList = new ArrayList<Edge>();
 		// String path =
 		// "D:\\JaveWeb\\MapReduceScheduler\\DataSet\\Job-50\\Job-50-0.txt";
-		List<Job> listJobs = SourceScheduler.readFromFile(path);
 		//
 //		List<Double> shuffleList = new ArrayList<Double>();
 //		for (Job jb : listJobs) {
@@ -236,7 +235,7 @@ public class GraphDAG {
 		// System.out.println("edge size:" + edgeList.size());
 	}
 	
-	public static double taskToScheduler_DAG(int nodeNum,int mapSlotNum){
+	public static double taskToScheduler_DAG(int nodeNum,int mapSlotNum,char EA_EF){
 		// -----------------------计算所有节点的rankU--------------------------------
 		// 节点的rankU(i)=w(i)+max(c+rankU(j)) 任务的平均时间+前任务路径最大时间
 		// c：传输时间  ,
@@ -275,7 +274,17 @@ public class GraphDAG {
 				// 任务的运行时间
 				double runtime = node.nodeWeight;
 				// 取当前时间最小的slot 最早完成时间 最早可用slot的下标
-				Integer	indexMinSlot = SourceScheduler.minMapSlotTime_EA_slot_index(listMapSlot);
+				Integer	indexMinSlot ;
+				if(EA_EF=='A'){
+					indexMinSlot = SourceScheduler.minMapSlotTime_EA_slot_index(listMapSlot);
+				}else{//EA_EF=='F'
+					MapTask maptask=new MapTask();
+					maptask.mapRunTime=(int) runtime;
+					maptask.mapSize=node.taskSize;
+	//				System.out.println("task size:"+node.taskSize);
+					indexMinSlot = SourceScheduler.minMapSlotTime_EF_slot_index(listMapSlot, maptask);
+				}
+				
 				// 当前的slot 处理任务，时间更新 ，加新的任务运行时间和准备时间
 				listMapSlot.get(indexMinSlot).currentMapSlotTime += (int) (runtime + (node.taskSize / listMapSlot.get(indexMinSlot).mapSlotSpeed));
 
@@ -304,7 +313,7 @@ public class GraphDAG {
 		// 排序nodeShuffleList，从小到大，把值赋值给reduce slot shuffle节点要累计所有map任务的之和
 		sortShuffle(ShuffleSum);
 		// 递增排序
-		for (int i = 0; i < listReduceSlot.size(); i++) {
+		for (int i = 0; i < Math.min(listReduceSlot.size(),ShuffleSum.size()); i++) {
 			listReduceSlot.get(i).currentReduceSlotTime = Integer.valueOf(ShuffleSum.get(i).intValue());
 		}
 
@@ -321,7 +330,17 @@ public class GraphDAG {
 					// 该边的下一个节点就是reduce 任务
 					double runtime = eg.nextNode.nodeWeight;// 任务的运行时间
 					// indexMinSlot最早可用slot的下标 取当前时间最小的slot 最早完成时间
-					Integer indexMinSlot = SourceScheduler.minReduceSlotTime_EA_slot_index(listReduceSlot);
+					Integer indexMinSlot;
+					if(EA_EF=='A'){
+						indexMinSlot = SourceScheduler.minReduceSlotTime_EA_slot_index(listReduceSlot);
+					}else{//EA_EF=='F'
+						ReduceTask rt=new ReduceTask();
+						rt.reduceRunTime=(int) runtime;
+						rt.reduceSize=eg.nextNode.taskSize;
+		//				System.out.println("reduce size:"+rt.reduceSize);
+						indexMinSlot = SourceScheduler.minReduceSlotTime_EF_slot_index(listReduceSlot, rt);
+					}
+				
 					double setupTime = eg.nextNode.taskSize / listReduceSlot.get(indexMinSlot).reduceSlotSpeed;
 					// 当前的slot 处理任务，时间更新 ，加新的任务运行时间和准备时间
 					listReduceSlot.get(indexMinSlot).currentReduceSlotTime += (int) (runtime + setupTime);
@@ -337,9 +356,9 @@ public class GraphDAG {
 				}
 			}
 		}
-		for (int i = 0; i < listReduceSlot.size(); i++) {
-//			System.out.println("currentReduceSlotTime2:" + listReduceSlot.get(i).currentReduceSlotTime);
-		}
+//		for (int i = 0; i < listReduceSlot.size(); i++) {
+////			System.out.println("currentReduceSlotTime2:" + listReduceSlot.get(i).currentReduceSlotTime);
+//		}
 
 		// 取出node 2中最大
 		double maxStageTime = 0;
