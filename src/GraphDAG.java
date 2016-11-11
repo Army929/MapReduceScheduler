@@ -66,8 +66,8 @@ public class GraphDAG {
 		nodeList.add(head);// 节点集合添加该元素------------------------------------添点 n1
 		for (Job jb : listJobs) {
 			// 为计算LB，每个作业的map、reduce分别的修正总时间
-			int map_LSumTime = 0;
-			int reduce_LSumTime = 0;
+			Double map_LSumTime = 0.0;
+			Double reduce_LSumTime = 0.0;
 
 			// n2
 			Node nodeJobEnd = new Node();
@@ -314,7 +314,7 @@ public class GraphDAG {
 		sortShuffle(ShuffleSum);
 		// 递增排序
 		for (int i = 0; i < Math.min(listReduceSlot.size(),ShuffleSum.size()); i++) {
-			listReduceSlot.get(i).currentReduceSlotTime = Integer.valueOf(ShuffleSum.get(i).intValue());
+			listReduceSlot.get(i).currentReduceSlotTime = ShuffleSum.get(i);//Integer.valueOf(ShuffleSum.get(i).intValue());
 		}
 
 		

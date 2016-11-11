@@ -11,7 +11,7 @@ public class MapTask {
 	// 文件大小
 	public int mapSize;
 	// 准备时间
-	public int mapSetupTime;
+	public double mapSetupTime;
 
 	// TBS算法，为了让任务属于具体哪个作业明确，加上一个字段
 	public Integer belongJobId;
@@ -40,7 +40,7 @@ public class MapTask {
 		this.mapSize = mapSize;
 	}
 
-	public int getMapSetupTime() {
+	public double getMapSetupTime() {
 		return mapSetupTime;
 	}
 

@@ -511,7 +511,7 @@ public class SourceScheduler {
 			}
 			T_map_low = Math.round(sum_map_time / slotMapUse);
 			T_map_up = (job.mapTaskNum - 1) * sum_map_time / (slotMapUse * job.mapTaskNum) + max_map_time;
-			job.mapStageTime = (int) (w * T_map_low + (1 - w) * T_map_up);
+			job.mapStageTime = (w * T_map_low + (1 - w) * T_map_up);
 
 			// redue T上下界计算
 			for (ReduceTask reducetaskInstance : job.reduceTask) {
@@ -526,7 +526,7 @@ public class SourceScheduler {
 			T_reduce_low = Math.round(sum_reduce_time / slotReduceUse);
 			T_reduce_up = (job.reduceTaskNum - 1) * sum_reduce_time / (slotReduceUse * job.reduceTaskNum)
 					+ max_reduce_time;
-			job.reduceStageTime = (int) (w * T_reduce_low + (1 - w) * T_reduce_up);
+			job.reduceStageTime = (w * T_reduce_low + (1 - w) * T_reduce_up);
 			// System.out.println("111mapstagetime:"+job.mapStageTime+",222reducestagetime:"+job.reduceStageTime);
 
 		}
@@ -560,7 +560,7 @@ public class SourceScheduler {
 		// 每次找出最小的job元素
 		for (int i = 0; i < jobNum - 1; i++) {
 			// 假设第一个job的mapstagetime最小
-			int minJobStageTime = tmplistjob.get(0).getMapStageTime();
+			Double minJobStageTime = tmplistjob.get(0).getMapStageTime();
 			Job minJob = new Job();
 			minJob = tmplistjob.get(0);
 			int flag = -1;// 标注是map阶段还是reduce阶段产生的stagetime值最小的job
@@ -617,8 +617,8 @@ public class SourceScheduler {
 		Collections.sort(maptaskList, new Comparator<MapTask>() {// 升序
 			public int compare(MapTask maptask1, MapTask maptask2) {
 				// maptask1.map_L_time
-				Integer mt1 = maptask1.mapRunTime + maptask1.mapSetupTime;
-				Integer mt2 = maptask2.mapRunTime + maptask2.mapSetupTime;
+				Double mt1 = maptask1.mapRunTime + maptask1.mapSetupTime;
+				Double mt2 = maptask2.mapRunTime + maptask2.mapSetupTime;
 				// System.out.println("maptask2.mapSetupTime:"+maptask2.mapSetupTime);
 				return mt1.compareTo(mt2);
 				// return
@@ -639,8 +639,8 @@ public class SourceScheduler {
 		Collections.sort(reduceTaskList, new Comparator<ReduceTask>() {// 这是升序，reverse
 																		// 降序
 			public int compare(ReduceTask reducetask1, ReduceTask reducetask2) {
-				Integer rt1 = reducetask1.reduceRunTime + reducetask1.reduceSetupTime;
-				Integer rt2 = reducetask2.reduceRunTime + reducetask2.reduceSetupTime;
+				Double rt1 = reducetask1.reduceRunTime + reducetask1.reduceSetupTime;
+				Double rt2 = reducetask2.reduceRunTime + reducetask2.reduceSetupTime;
 				return rt1.compareTo(rt2);
 				// return
 				// reducetask1.getReduceRunTime().compareTo(reducetask2.getReduceRunTime());
@@ -676,21 +676,21 @@ public class SourceScheduler {
 		// 同节点 100
 		for (int i = 0; i < sumMapSlot * 0.4; i++) {
 			MapSlot ms100 = new MapSlot();
-			ms100.currentMapSlotTime = 0;
+			ms100.currentMapSlotTime = 0.0;
 			ms100.mapSlotSpeed = fd;
 			listMapSlot.add(ms100);
 		}
 		// 同机架，不同节点 50
 		for (int i = 0; i < sumMapSlot * 0.3; i++) {
 			MapSlot ms50 = new MapSlot();
-			ms50.currentMapSlotTime = 0;
+			ms50.currentMapSlotTime = 0.0;
 			ms50.mapSlotSpeed = fr;
 			listMapSlot.add(ms50);
 		}
 		// 不同机架：30
 		for (int i = 0; i < sumMapSlot * 0.3; i++) {
 			MapSlot ms30 = new MapSlot();
-			ms30.currentMapSlotTime = 0;
+			ms30.currentMapSlotTime = 0.0;
 			ms30.mapSlotSpeed = fn;
 			listMapSlot.add(ms30);
 		}
@@ -700,19 +700,19 @@ public class SourceScheduler {
 		int sumReduceSlot = nodeNum * 2;
 		for (int i = 0; i < sumReduceSlot * 0.4; i++) {
 			ReduceSlot rs100 = new ReduceSlot();
-			rs100.currentReduceSlotTime = 0;
+			rs100.currentReduceSlotTime = 0.0;
 			rs100.reduceSlotSpeed = fd;
 			listReduceSlot.add(rs100);
 		}
 		for (int i = 0; i < sumReduceSlot * 0.3; i++) {
 			ReduceSlot rs50 = new ReduceSlot();
-			rs50.currentReduceSlotTime = 0;
+			rs50.currentReduceSlotTime = 0.0;
 			rs50.reduceSlotSpeed = fr;
 			listReduceSlot.add(rs50);
 		}
 		for (int i = 0; i < sumReduceSlot * 0.3; i++) {
 			ReduceSlot rs30 = new ReduceSlot();
-			rs30.currentReduceSlotTime = 0;
+			rs30.currentReduceSlotTime = 0.0;
 			rs30.reduceSlotSpeed = fn;
 			listReduceSlot.add(rs30);
 		}
@@ -761,7 +761,7 @@ public class SourceScheduler {
 
 			// 验证LPT结果是否正确 从大到小排序 -----正确
 			// 赋值sigma-》stagetime=0;
-			job.mapStageTime = 0;
+			job.mapStageTime = 0.0;
 			// 对每个map任务处理
 			for (MapTask maptask : job.mapTask) {
 				// 当前任务下标
@@ -859,8 +859,7 @@ public class SourceScheduler {
 			// 1.执行时间+准备时间
 			// 准备时间是：任务文件大小/该slot速度 重新改变setup time 时间
 			// map任务中的setuptime可以不用定义，直接用临时变量取代
-			job.mapTask.get(j).mapSetupTime = (int) Math
-					.round((job.mapTask.get(j).mapSize) / (listMapSlot.get(k).mapSlotSpeed));
+			job.mapTask.get(j).mapSetupTime =(job.mapTask.get(j).mapSize) / (listMapSlot.get(k).mapSlotSpeed);
 
 			// 2.当前slot时间
 			// currentSlotKTime =
@@ -879,11 +878,11 @@ public class SourceScheduler {
 					+ (job.mapTask.get(j).mapSetupTime + job.mapTask.get(j).mapRunTime);// 针对slot
 
 			if (completeJob_i_j_Time > job.mapStageTime) {
-				job.mapStageTime = (int) completeJob_i_j_Time;
+				job.mapStageTime = completeJob_i_j_Time;
 			}
 			// 5.更新新的当前slot时间
 			// 运行完该任务，该slot的当前时间要加刚才运行的任务的时间---更新
-			listMapSlot.get(k).currentMapSlotTime = (int) completeJob_i_j_Time;
+			listMapSlot.get(k).currentMapSlotTime = completeJob_i_j_Time;
 
 			// TBS算法，需要记录添加的mapTask的顺序,每个Slot需要记录maptask任务 ，只对map阶段，没有reduce阶段
 			listMapSlot.get(k).maptaskSlotList.add(job.mapTask.get(j));
@@ -892,8 +891,8 @@ public class SourceScheduler {
 			// 1.执行时间+准备时间
 			// ReduceTask reducetask = job.reduceTask.get(j);////
 			// 通过下标取到具体reduce任务
-			job.reduceTask.get(j).reduceSetupTime = (int) Math // 准备时间
-					.round((job.reduceTask.get(j).reduceSize) / (listReduceSlot.get(k).reduceSlotSpeed));
+			job.reduceTask.get(j).reduceSetupTime =  // 准备时间
+					(job.reduceTask.get(j).reduceSize) / (listReduceSlot.get(k).reduceSlotSpeed);
 					// 2.当前slot时间
 					// currentSlotKTime =
 					// listReduceSlot.get(k).currentReduceSlotTime
@@ -912,11 +911,11 @@ public class SourceScheduler {
 
 			job.reduceStageTime += (job.reduceTask.get(j).reduceSetupTime + job.reduceTask.get(j).reduceRunTime);//
 			if (completeJob_i_j_Time > job.reduceStageTime) {
-				job.reduceStageTime = (int) completeJob_i_j_Time;
+				job.reduceStageTime = completeJob_i_j_Time;
 			}
 			// 5.更新新的当前slot时间
 			// 运行完该任务，该slot的当前时间要加刚才运行的任务的时间---更新
-			listReduceSlot.get(k).currentReduceSlotTime = (int) completeJob_i_j_Time;// +=
+			listReduceSlot.get(k).currentReduceSlotTime = completeJob_i_j_Time;// +=
 																						// (job.reduceTask.get(j).reduceSetupTime
 																						// +
 																						// job.reduceTask.get(j).reduceRunTime);
@@ -962,7 +961,7 @@ public class SourceScheduler {
 		// 计数，为了返回下标值
 		int count = -1;
 		// 假设第一个map slot的当前时间最小
-		Integer minMapSlotTime = listMapSlot.get(0).currentMapSlotTime;
+		double minMapSlotTime = listMapSlot.get(0).currentMapSlotTime;
 		for (MapSlot ms : listMapSlot) {
 			count++;
 			// 根据EA
@@ -981,7 +980,7 @@ public class SourceScheduler {
 		int count = -1;
 		// 假设第一个map slot的当前时间最小
 		// 假设第一个reduce slot的当前时间最小
-		Integer minReduceSlotTime = listReduceSlot.get(0).currentReduceSlotTime;
+		double minReduceSlotTime = listReduceSlot.get(0).currentReduceSlotTime;
 		for (ReduceSlot rs : listReduceSlot) {
 			count++;
 			// 验证slot值，reduce slot个数 slot只对reduce阶段前reduce slot的个数排序有效
@@ -1051,7 +1050,7 @@ public class SourceScheduler {
 
 	// ------得到reduce 最大的slot上的时间值-------调用需要
 	public static Integer maxReduceSlotValue(List<ReduceSlot> listReduceSlot) {
-		Integer maxReduceSlot = listReduceSlot.get(0).currentReduceSlotTime;
+		double maxReduceSlot = listReduceSlot.get(0).currentReduceSlotTime;
 		int count = -1;
 		Integer maxIndex = 0;
 		for (ReduceSlot rs : listReduceSlot) {
@@ -1171,12 +1170,12 @@ public class SourceScheduler {
 		// 初始化listjob所有内容，通过map slot上分配好的任务确定任务执行时间分配，stagetime
 
 		for (Job jbElem : listJob) {
-			jbElem.mapStageTime = 0;// 重新调度做准备
+			jbElem.mapStageTime = 0.0;// 重新调度做准备
 		}
 
 		for (MapSlot ms_jb : listMapSlot) {
 			// 初始化所有MapSlot的当前时间为0，根据具体任务排序累加
-			ms_jb.currentMapSlotTime = 0;
+			ms_jb.currentMapSlotTime = 0.0;
 			// 依次遍历每个map slot上任务排序
 			for (MapTask mt_jb : ms_jb.maptaskSlotList) {// slot上的map任务排序
 				// 验证map的setup时间是否存在(已赋值)？setuptime-----已验证存在
@@ -1280,8 +1279,8 @@ public class SourceScheduler {
 		// }
 
 		// 所有作业map|reduce的任务的修正时间总和 LB1,LB2都要用到
-		int allTaskL_map_time = 0;
-		int allTaskL_reduce_time = 0;
+		Double allTaskL_map_time = 0.0;
+		Double allTaskL_reduce_time = 0.0;
 		// 定义要求变量
 		double LB = 0.0, LB1 = 0, LB2 = 0;
 
@@ -1289,12 +1288,12 @@ public class SourceScheduler {
 		MapTask maptask = listJob.get(0).mapTask.get(0);// 假设第一作业的第一个map任务的修正时间最小
 
 		// 最小的map 任务的修正时间 准备时间最小是用最大传输速度取代其他传输速度麽？因为没发生调度(maptask.mapSize / fd)
-		int min_L_map_time = maptask.mapRunTime + maptask.mapSetupTime;
+		Double min_L_map_time = maptask.mapRunTime + maptask.mapSetupTime;
 
 		ReduceTask reducetask = listJob.get(0).reduceTask.get(0);// 假设第一作业的第一个reduce任务的修正时间最小
 		// 最小的reduce 任务的修正时间
 		// 准备时间最小是用最大传输速度取代其他传输速度麽？因为没发生调度(reducetask.reduceSize / fd);
-		int min_L_reduce_time = reducetask.reduceRunTime + reducetask.reduceSetupTime;
+		Double min_L_reduce_time = reducetask.reduceRunTime + reducetask.reduceSetupTime;
 
 		// 已验证正确
 		// System.out.println("计算前
@@ -1302,14 +1301,14 @@ public class SourceScheduler {
 		// 要使修正时间下界更小，数据要放本地，传输速度选择最大 100 fd
 		for (Job job : listJob) {
 			// 一个作业的 map 阶段修正时间总和
-			job.L_map_sumTime = 0;
+			job.L_map_sumTime = 0.0;
 
 			// 一个作业map阶段最大修正时间的任务的修正时间
-			int max_L_map_time = 0;
+			Double max_L_map_time = 0.0;
 			// 一个作业的map任务的修正时间总和
 			for (MapTask mt : job.mapTask) {
 				// 一个map任务的修正时间
-				int tmpMapTaskLtime = mt.mapRunTime + mt.mapSetupTime;
+				Double tmpMapTaskLtime = mt.mapRunTime + mt.mapSetupTime;
 				// 修正时间：执行时间P+最小准备时间 min S
 				job.L_map_sumTime += tmpMapTaskLtime;
 
@@ -1322,13 +1321,13 @@ public class SourceScheduler {
 			allTaskL_map_time += job.L_map_sumTime;
 
 			// reduce 阶段修正时间
-			job.L_reduce_sumTime = 0;
+			job.L_reduce_sumTime = 0.0;
 			// 一个作业map阶段最大修正时间任务的修正时间
-			int max_L_reduce_time = 0;
+			Double max_L_reduce_time = 0.0;
 			// 一个作业的reduce任务的修正时间总和
 			for (ReduceTask rt : job.reduceTask) {
 				// 一个reduce任务的修正时间
-				int tmpReduceTaskLtime = rt.reduceRunTime + rt.reduceSetupTime;
+				Double tmpReduceTaskLtime = rt.reduceRunTime + rt.reduceSetupTime;
 				job.L_reduce_sumTime += tmpReduceTaskLtime;
 
 				// 为得到该作业所有reduce任务中最大的修正时间的任务的修正时间 LB2
@@ -1664,7 +1663,7 @@ public class SourceScheduler {
 		average30JobsRE(jobNum, nodeNum, mapSlotNum, w, 'A');
 		System.out.println("-----------------算法DAG EA-----------------");
 		avg30DAG(jobNum, nodeNum, mapSlotNum,'A');
-		
+//		
 		System.out.println("-----------------算法EF-----------------------");
 		average30JobsRE(jobNum, nodeNum, mapSlotNum, w, 'F');
 		System.out.println("-----------------算法DAG  EF-----------------");

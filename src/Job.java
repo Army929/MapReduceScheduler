@@ -17,17 +17,17 @@ public class Job {
 
 	//1、所有map的时间，为计算 map持续时间评估，为作业排序 w*T_low+(1-w)*T_up === 
 	//2、重新赋值，作为map阶段该作业完成时间，sigma_m,为了Reduce前的排序
-	public Integer mapStageTime;
+	public Double mapStageTime;
 	
 	//1、所有reduce的时间   为计算reduce持续时间评估 ，为作业排序 === 
 	//2、重新赋值，作为reduce阶段该作业完成时间，sigma_r,只为记录作业当前运行的时间
-	public Integer reduceStageTime;
+	public Double reduceStageTime;
 	
 	
 	//为了计算LB，引入计算每个job的map和reduce总的修正处理时间L(i,j)=P(i,j)+min S(i,j)
 	//会对修正时间排序等操作，得到LB1,LB2
-	public Integer L_map_sumTime;
-	public Integer L_reduce_sumTime;
+	public Double L_map_sumTime;
+	public Double L_reduce_sumTime;
 	
 	 //TBS算法，为了让任务属于具体哪个作业明确，作业要有一个id即任务所属的作业
 	public Integer jobId;
@@ -39,19 +39,19 @@ public class Job {
 		this.jobId = jobId;
 	}
 
-	public Integer getReduceStageTime() {
+	public Double getReduceStageTime() {
 		return reduceStageTime;
 	}
 
-	public void setReduceStageTime(Integer reduceStageTime) {
+	public void setReduceStageTime(Double reduceStageTime) {
 		this.reduceStageTime = reduceStageTime;
 	}
 
-	public Integer getMapStageTime() {
+	public Double getMapStageTime() {
 		return mapStageTime;
 	}
 
-	public void setMapStageTime(Integer mapStageTime) {
+	public void setMapStageTime(Double mapStageTime) {
 		this.mapStageTime = mapStageTime;
 	}
 
@@ -87,19 +87,19 @@ public class Job {
 		this.reduceTask = reduceTask;
 	}
 	
-	public Integer getL_map_sumTime() {
+	public Double getL_map_sumTime() {
 		return L_map_sumTime;
 	}
 
-	public void setL_map_sumTime(Integer l_map_sumTime) {
+	public void setL_map_sumTime(Double l_map_sumTime) {
 		L_map_sumTime = l_map_sumTime;
 	}
 
-	public Integer getL_reduce_sumTime() {
+	public Double getL_reduce_sumTime() {
 		return L_reduce_sumTime;
 	}
 
-	public void setL_reduce_sumTime(Integer l_reduce_sumTime) {
+	public void setL_reduce_sumTime(Double l_reduce_sumTime) {
 		L_reduce_sumTime = l_reduce_sumTime;
 	}
 

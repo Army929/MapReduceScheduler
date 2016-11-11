@@ -11,7 +11,7 @@ public class ReduceTask {
 	// 文件大小
 	public int reduceSize;
 	// 准备时间
-	public int reduceSetupTime;
+	public double reduceSetupTime;
 
 	public Integer getReduceRunTime() {
 		return reduceRunTime;
@@ -29,7 +29,7 @@ public class ReduceTask {
 		this.reduceSize = reduceSize;
 	}
 
-	public int getReduceSetupTime() {
+	public double getReduceSetupTime() {
 		return reduceSetupTime;
 	}
 

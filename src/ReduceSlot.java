@@ -6,7 +6,7 @@
 */
 public class ReduceSlot {
   //每台节点reduce数量2
-	public Integer currentReduceSlotTime;
+	public Double currentReduceSlotTime;
 
 	//reduce slot速度
 	public Integer reduceSlotSpeed;
@@ -17,10 +17,10 @@ public class ReduceSlot {
 	public void setReduceSlotSpeed(Integer reduceSlotSpeed) {
 		this.reduceSlotSpeed = reduceSlotSpeed;
 	}
-	public Integer getCurrentReduceSlotTime() {
+	public Double getCurrentReduceSlotTime() {
 		return currentReduceSlotTime;
 	}
-	public void setCurrentReduceSlotTime(Integer currentReduceSlotTime) {
+	public void setCurrentReduceSlotTime(Double currentReduceSlotTime) {
 		this.currentReduceSlotTime = currentReduceSlotTime;
 	}
 }

@@ -10,7 +10,7 @@ import java.util.List;
 public class MapSlot {
 	// map，reudce slot数量并不一定，作为参数在变
 	// 每台节点map slot数量：2，4，6，8 ，跟节点数无关
-	public Integer currentMapSlotTime;
+	public Double currentMapSlotTime;
 
 	// map slot的速度
 	public Integer mapSlotSpeed;
@@ -26,11 +26,11 @@ public class MapSlot {
 		this.mapSlotSpeed = mapSlotSpeed;
 	}
 
-	public Integer getCurrentMapSlotTime() {
+	public Double getCurrentMapSlotTime() {
 		return currentMapSlotTime;
 	}
 
-	public void setCurrentMapSlotTime(Integer currentMapSlotTime) {
+	public void setCurrentMapSlotTime(Double currentMapSlotTime) {
 		this.currentMapSlotTime = currentMapSlotTime;
 	}
 
